@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Stage 1: Update/Install packages') {
+            steps {
+                echo 'Install the below libraries'
+                sh 'pip3 install ncclient'
+                sh 'pip3 install prettytable'
+                sh 'pip3 install netaddr'
+                sh 'pip3 install pandas'
+                sh 'pip3 install ipaddress'
+            }
+        }
+        stage('Stage 2:  Checking and fixing violations') {
+            steps {
+                echo ' if code complies with PEP8 '
+                sh 'pylint --output-format=parseable --reports=n --msg-template="{path}:{line}:{column}:{msg_id}:{msg}" /home/willy/lab9/netman_netconf_obj2.py > /home/willy/lab9/result_logs.txt || true'
+                script {
+                    def file_info = readFile('/home/willy/lab9/result_logs.txt')
+                    def code_score = file_info.tokenize('\n').find { it.startsWith('Your code has been rated') }.split()[6].split('/')[0].toInteger()
+                    echo ' Pylint score: {code_score}'
+                    if (code_score <= 5) {
+                        error "The score for the code is ${pylint_score}, which is below the quality gate threshold of 5, pls fix your code"
+                    }
+                }
+            }
+        }
+        stage('Stage 3: Running the application') {
+            steps {
+                echo 'Executing the application code'
+                sh 'python3 /home/willy/lab9/netman_netconf_obj2.py'
+            }
+        }
+        stage('Stage 4: Unit test') {
+            steps {
+                echo 'Testing if the application'
+            }
+        }
+    }
+}

@@ -15,7 +15,7 @@ pipeline {
         stage('Stage 2:  Checking and fixing violations') {
             steps {
                 echo ' if code complies with PEP8 '
-                sh 'pylint --output-format=parseable --reports=n --msg-template="{path}:{line}:{column}:{msg_id}:{msg}" /home/willy/lab9/netman_netconf_obj2.py > /home/willy/lab9/result_logs.txt || true'
+                sh 'pylint --output-format=parseable --reports=n --msg-template="{path}:{line}:{column}:{msg_id}:{msg}" /home/willy/lab9/netman_netconf_obj2.py > /home/willy/lab9/rresult_logs.txt || true'
                 script {
                     def file_info = readFile('/home/willy/lab9/result_logs.txt')
                     def code_score = file_info.tokenize('\n').find { it.startsWith('Your code has been rated') }.split()[6].split('/')[0].toInteger()

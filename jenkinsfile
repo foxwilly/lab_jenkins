@@ -32,9 +32,10 @@ pipeline {
                 sh 'python3 /home/willy/lab9/netman_netconf_obj2.py'
             }
         }
-        stage('Stage 4: Unit test') {
+        stage('Stage 4: Unit Testing for Network Automation') {
             steps {
                 echo 'Testing if the application'
+                sh 'python3 /home/willy/unitTest/autoUnitTest.py'
             }
         }
     }
